@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Clima</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2em;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 30px;
+      color: #666;
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #resultado {
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      min-height: 100px;
+      transition: 0.3s ease;
+    }
+
+    #resultado h2 {
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      color: #333;
+    }
+
+    #resultado p {
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #444;
+    }
+
+    @media (max-width: 480px) {
+      input {
+        width: 100%;
+      }
+
+      .form-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Consulta de Clima</h1>
+    <p>Digite um <strong>CEP</strong> ou o <strong>nome de uma cidade</strong></p>
+
+    <div class="form-group">
+      <input type="text" id="consulta" placeholder="Ex: 01001000 ou Rio Verde">
+      <button onclick="buscarClima()">Consultar</button>
+    </div>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    async function buscarClima() {
+      const consulta = document.getElementById('consulta').value.trim();
+      const resultado = document.getElementById('resultado');
+
+      if (!consulta) {
+        resultado.innerHTML = `<p>Por favor, insira um CEP ou nome de cidade.</p>`;
+        return;
+      }
+
+      resultado.innerHTML = "<p>Buscando clima...</p>";
+
+      try {
+        const res = await fetch(`http://localhost:8000/clima/${encodeURIComponent(consulta)}`);
+        const data = await res.json();
+
+        if (data.erro) {
+          resultado.innerHTML = `<p><strong>Erro:</strong> ${data.erro}</p>`;
+        } else {
+          resultado.innerHTML = `
+            <h2>${data.cidade} - ${data.uf}</h2>
+            <p><strong>Temperatura:</strong> ${data.temperatura}</p>
+            <p><strong>Clima:</strong> ${data.clima}</p>
+            <p><strong>Umidade:</strong> ${data.umidade}</p>
+            <p><strong>Vento:</strong> ${data.vento}</p>
+          `;
+        }
+      } catch (error) {
+        resultado.innerHTML = `<p><strong>Erro:</strong> Não foi possível conectar à API.</p>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
