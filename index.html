@@ -127,7 +127,7 @@
       resultado.innerHTML = "<p>Buscando clima...</p>";
 
       try {
-        const res = await fetch(`http://localhost:8000/clima/${encodeURIComponent(consulta)}`);
+        const res = await fetch(`https://api-clima-3kgy.onrender.com/clima/${encodeURIComponent(consulta)}`);
         const data = await res.json();
 
         if (data.erro) {

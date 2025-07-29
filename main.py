@@ -1,3 +1,4 @@
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 import httpx
@@ -12,8 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-OPENWEATHER_KEY = "afec6a554ab5fc9f18e84596dcb898b9"
+OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 @app.get("/clima/{consulta}")
 async def clima(consulta: str):
